@@ -15,6 +15,39 @@
     ></script>
   </head>
   <body>
+    <nav class="navbar">
+      <div class="navbar-item">
+        <h1 class="title">Weather Dashboard</h1>
+      </div>
+    </nav>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column">
+            <input
+              class="input is-info"
+              type="text"
+              placeholder="Enter city here."
+              id="cityInput"
+            />
+            <!-- <input
+            class="input is-info"
+            type="text"
+            placeholder="Enter state here."
+            id="stateInput"
+          /> -->
+            <button
+              class="button is-outlined is-info"
+              type="button"
+              id="submit"
+            >
+              Search
+            </button>
+          </div>
+          <div class="column is-9" id="weatherDiv"></div>
+        </div>
+      </div>
+    </section>
     <script
       src="http://code.jquery.com/jquery-3.5.0.min.js"
       integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
