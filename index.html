@@ -23,26 +23,26 @@
     <section class="section">
       <div class="container">
         <div class="columns">
-          <div class="column">
-            <input
-              class="input is-info"
-              type="text"
-              placeholder="Enter city here."
-              id="cityInput"
-            />
-            <!-- <input
-            class="input is-info"
-            type="text"
-            placeholder="Enter state here."
-            id="stateInput"
-          /> -->
-            <button
-              class="button is-outlined is-info"
-              type="button"
-              id="submit"
-            >
-              Search
-            </button>
+          <div class="column is-3">
+            <div class="field">
+              <div class="control" id="cityInputDiv">
+                <input
+                  class="input is-info inputs"
+                  type="text"
+                  placeholder="Enter city here."
+                  id="cityInput"
+                />
+              </div>
+              <div class="control">
+                <button
+                  class="button is-outlined is-info"
+                  type="button"
+                  id="submit"
+                >
+                  Search
+                </button>
+              </div>
+            </div>
           </div>
           <div class="column is-9" id="weatherDiv"></div>
         </div>
