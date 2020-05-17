@@ -19,6 +19,7 @@ $("#submit").on("click", function (e) {
 
   // create the api call source for current weather conditions
   var currentSrc = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${apiKey}`;
+  var fiveDaySrc = `https://api.openweathermap.org/data/2.5/forecast?q=${cityInput}&appid=${apiKey}`;
   // start the ajax call to the openweather api for current weather conditions
   $.get(currentSrc).then(function (response) {
     currentWeatherDiv.show();
@@ -54,4 +55,21 @@ $("#submit").on("click", function (e) {
     // get access to the weather icon with the icon id
     // append the icon id to the div
   });
+  // call the 5 day forcast API
+  $.get(fiveDaySrc).then(function (response) {
+    console.log(response);
+
+  });
 });
+
+function forecastLoop (response[i]) {
+  for(var i = 0; i <= 4; i++) {
+    // grab the info for the next 5 days
+    // run a for loop to loop over the data
+    // for each day create a card with forcast
+    // date
+    // temp
+    // humidity
+    // weather icon
+  }
+}
