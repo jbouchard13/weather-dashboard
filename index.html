@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" type="stylesheet" href="assets/styles.css" />
+    <link rel="stylesheet" href="assets/styles.css" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css"
@@ -44,7 +44,14 @@
               </div>
             </div>
           </div>
-          <div class="column is-9" id="weatherDiv"></div>
+          <div class="column is-9" id="weatherDiv">
+            <div class="hero" id="currentWeatherDiv">
+              <h3 class="title" id="currentCity"></h3>
+              <p>Temperature: <span id="currentTemp"></span> °F</p>
+              <p>Humidity: <span id="currentHumidity"></span>%</p>
+              <p>Wind Speed: <span id="currentWind"></span> MPH</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
