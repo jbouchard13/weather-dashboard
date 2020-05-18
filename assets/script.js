@@ -11,16 +11,30 @@ currentWeatherDiv.hide();
 
 // on page load
 // retrieve search names from local storage
-var lastSearchFromStorage = localStorage.getItem("city");
+// for the length of localstorage
+for (var i = 0; i < localStorage.length; i++) {
+  // push each key to the searchArray
+  searchArray.push(localStorage.getItem(localStorage.key(i)));
+}
+// create an array for previous searches
+var searchArray = [];
+// push the searches into the search array
+// searchArray.push(lastSearchFromStorage);
+console.log(searchArray);
 // generate buttons for previously searched cities
 var lastSearchBtn = $("<button>", {
   class: "button is-outlined is-info is-fullwidth buttons",
   "data-city": currentCity,
 }).text(currentCity);
 
+// create index for localstorage
+var indexNumber = 0;
+
 // add an event listener to the submit button
 $("#submit").on("click", function (e) {
   e.preventDefault();
+  // add 1 to the index
+  indexNumber++;
   // grab the input from both the city and state input boxes
   var cityInput = $("#cityInput").val().trim();
 
@@ -33,8 +47,9 @@ $("#submit").on("click", function (e) {
   var fiveDaySrc = `https://api.openweathermap.org/data/2.5/forecast?q=${cityInput}&units=imperial&appid=${apiKey}`;
   // start the ajax call to the openweather api for current weather conditions
   $.get(currentSrc).then(function (response) {
+    // show the currentweather div
     currentWeatherDiv.show();
-    console.log(response);
+    // console.log(response);
     // remove the loading symbol from the input box
     $(".control").removeClass("is-loading");
 
@@ -46,18 +61,18 @@ $("#submit").on("click", function (e) {
       currentIcon: response.weather[0].icon,
       currentCity: response.name,
     };
-    // stringify the currentConditions object
-    var currentJSON = JSON.stringify(currentConditions);
+    // save the currentCity
+    var currentCitySaved = currentConditions.currentCity;
     // save the returned search name(currentCity) to local storage for later use
-    localStorage.setItem(currentConditions.currentCity, currentJSON);
+    localStorage.setItem(`city${indexNumber}`, currentCitySaved);
     // create a button with the returned search name
     var lastSearchBtn = $("<button>", {
       class: "button is-outlined is-info is-fullwidth buttons",
-      "data-city": currentConditions.currentCity,
-      id: currentConditions.currentCity,
-    }).text(currentConditions.currentCity);
+      "data-city": currentCitySaved,
+      id: currentCitySaved,
+    }).text(currentCitySaved);
     // add event listener to the generated buttons
-    $(document).on("click", `#${currentConditions.currentCity}`, function () {
+    $(document).on("click", `#${currentCitySaved}`, function () {
       // add loading animation
       $(".control").addClass("is-loading");
       // grab city data
@@ -96,6 +111,8 @@ $("#clearSearch").on("click", function () {
   lastSearchesEl.empty();
   // clear localstorage
   localStorage.clear();
+  // reset indexNumber to 0
+  indexNumber = 0;
 });
 
 function currentDay(currentDaySrc) {}
