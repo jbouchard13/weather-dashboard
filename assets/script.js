@@ -1,11 +1,22 @@
 // weather api key
 var apiKey = "138ccdcbc1c05e83db93a0593cb96881";
-
+// linking weatherDiv div
 var weatherDiv = $("#weatherDiv");
+// linking lastSearches div
+var lastSearchesEl = $("#lastSearches");
 
 // hide the currentWeatherDiv
 var currentWeatherDiv = $("#currentWeatherDiv");
 currentWeatherDiv.hide();
+
+// on page load
+// retrieve search names from local storage
+var lastSearchFromStorage = localStorage.getItem("city");
+// generate buttons for previously searched cities
+var lastSearchBtn = $("<button>", {
+  class: "button is-outlined is-info is-fullwidth buttons",
+  "data-city": currentCity,
+}).text(currentCity);
 
 // add an event listener to the submit button
 $("#submit").on("click", function (e) {
@@ -28,38 +39,68 @@ $("#submit").on("click", function (e) {
     $(".control").removeClass("is-loading");
 
     // get the current temperature, humidity, wind speed, icon ID, and city
-    var currentTemp = response.main.temp;
-    // convert the temperature in kelvin to fahrenheit
-    // var currentTemp = Math.round((currentKelvin - 273.15) * 1.8 + 32);
-    var currentHumidity = response.main.humidity;
-    var currentWind = response.wind.speed;
-    var currentIcon = response.weather[0].icon;
-    var currentCity = response.name;
-    console.log(
-      "temp",
-      currentTemp,
-      "humidity",
-      currentHumidity,
-      "wind",
-      currentWind,
-      "iconID",
-      currentIcon
-    );
-    // create a new div element to hold the current day weather
-    // create header element to hold the city name
-    $("#currentCity").text(currentCity);
-    // create <p> elements for each weather condition
-    $("#currentTemp").text(currentTemp);
-    $("#currentHumidity").text(currentHumidity);
-    $("#currentWind").text(currentWind);
-    // get access to the weather icon with the icon id
-    $("#currentIconEl").attr(
-      "src",
-      `http://openweathermap.org/img/wn/${currentIcon}.png`
-    );
-    // append the icon id to the div
+    var currentConditions = {
+      currentTemp: response.main.temp,
+      currentHumidity: response.main.humidity,
+      currentWind: response.wind.speed,
+      currentIcon: response.weather[0].icon,
+      currentCity: response.name,
+    };
+    // stringify the currentConditions object
+    var currentJSON = JSON.stringify(currentConditions);
+    // save the returned search name(currentCity) to local storage for later use
+    localStorage.setItem(currentConditions.currentCity, currentJSON);
+    // create a button with the returned search name
+    var lastSearchBtn = $("<button>", {
+      class: "button is-outlined is-info is-fullwidth buttons",
+      "data-city": currentConditions.currentCity,
+      id: currentConditions.currentCity,
+    }).text(currentConditions.currentCity);
+    // add event listener to the generated buttons
+    $(document).on("click", `#${currentConditions.currentCity}`, function () {
+      // add loading animation
+      $(".control").addClass("is-loading");
+      // grab city data
+      var clickedCity = $(this).data("city");
+      // new search sources with clicked city
+      var clickedCurrentSrc = `https://api.openweathermap.org/data/2.5/weather?q=${clickedCity}&units=imperial&appid=${apiKey}`;
+      var clickedFiveDaySrc = `https://api.openweathermap.org/data/2.5/forecast?q=${clickedCity}&units=imperial&appid=${apiKey}`;
+      // run a new ajax call for up to date info on previous searched cities
+      $.get(clickedCurrentSrc).then(function (response) {
+        // remove search animation
+        $(".control").removeClass("is-loading");
+        var clickedCurrentConditions = {
+          currentTemp: response.main.temp,
+          currentHumidity: response.main.humidity,
+          currentWind: response.wind.speed,
+          currentIcon: response.weather[0].icon,
+          currentCity: response.name,
+        };
+        updateCurrentDay(clickedCurrentConditions);
+      });
+      fiveDay(clickedFiveDaySrc);
+    });
+    // append the button to the lastSearches div
+    lastSearchesEl.append(lastSearchBtn);
+    // console the items to test
+    console.log(currentConditions);
+    updateCurrentDay(currentConditions);
   });
   // call the 5 day forcast API
+  fiveDay(fiveDaySrc);
+});
+
+// add a clear button for the lastSearches div
+$("#clearSearch").on("click", function () {
+  // empty the last searches
+  lastSearchesEl.empty();
+  // clear localstorage
+  localStorage.clear();
+});
+
+function currentDay(currentDaySrc) {}
+
+function fiveDay(fiveDaySrc) {
   $.get(fiveDaySrc).then(function (response) {
     $("#fiveDayDiv").empty();
     // grab the info for the forecast
@@ -73,7 +114,6 @@ $("#submit").on("click", function (e) {
       forecastList[27],
       forecastList[35],
     ];
-    console.log(forecastList);
     for (var i = 0; i < fiveDay.length; i++) {
       // for each day create a tile with forcast
       var tileEl = $("<div>", {
@@ -100,7 +140,21 @@ $("#submit").on("click", function (e) {
       tileEl.append(dateEl, iconEl, tempEl, humidityEl);
       // append the til to the 5 day div
       $("#fiveDayDiv").append(tileEl);
-      console.log(date, temp, humidity);
+      // console.log(date, temp, humidity);
     }
   });
-});
+}
+
+function updateCurrentDay(currentConditions) {
+  // create header element to hold the city name
+  $("#currentCity").text(currentConditions.currentCity);
+  // create <p> elements for each weather condition
+  $("#currentTemp").text(currentConditions.currentTemp);
+  $("#currentHumidity").text(currentConditions.currentHumidity);
+  $("#currentWind").text(currentConditions.currentWind);
+  // get access to the weather icon with the icon id
+  $("#currentIconEl").attr(
+    "src",
+    `http://openweathermap.org/img/wn/${currentConditions.currentIcon}.png`
+  );
+}
