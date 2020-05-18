@@ -10,22 +10,24 @@ var currentWeatherDiv = $("#currentWeatherDiv");
 currentWeatherDiv.hide();
 
 // on page load
+// create an array for previous searches
+var searchesArray = [];
 // retrieve search names from local storage
 // for the length of localstorage
 for (var i = 0; i < localStorage.length; i++) {
-  // push each key to the searchArray
-  searchArray.push(localStorage.getItem(localStorage.key(i)));
+  // push the searches into the search array
+  searchesArray.push(localStorage.getItem(localStorage.key(i)));
 }
-// create an array for previous searches
-var searchArray = [];
-// push the searches into the search array
-// searchArray.push(lastSearchFromStorage);
-console.log(searchArray);
+console.log(searchesArray);
 // generate buttons for previously searched cities
-var lastSearchBtn = $("<button>", {
-  class: "button is-outlined is-info is-fullwidth buttons",
-  "data-city": currentCity,
-}).text(currentCity);
+searchesArray.forEach(function (search) {
+  var searchBtn = $("<button>", {
+    class: "button is-outlined is-info is-fullwidth buttons",
+    "data-city": search,
+    id: search,
+  }).text(search);
+  lastSearchesEl.append(searchBtn);
+});
 
 // create index for localstorage
 var indexNumber = 0;
@@ -115,7 +117,20 @@ $("#clearSearch").on("click", function () {
   indexNumber = 0;
 });
 
-function currentDay(currentDaySrc) {}
+function currentDay(src) {
+  $.get(src).then(function (response) {
+    // remove search animation
+    $(".control").removeClass("is-loading");
+    var clickedCurrentConditions = {
+      currentTemp: response.main.temp,
+      currentHumidity: response.main.humidity,
+      currentWind: response.wind.speed,
+      currentIcon: response.weather[0].icon,
+      currentCity: response.name,
+    };
+    updateCurrentDay(clickedCurrentConditions);
+  });
+}
 
 function fiveDay(fiveDaySrc) {
   $.get(fiveDaySrc).then(function (response) {
