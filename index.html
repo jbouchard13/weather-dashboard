@@ -35,7 +35,7 @@
               </div>
               <div class="control">
                 <button
-                  class="button is-outlined is-info"
+                  class="button is-outlined is-info is-fullwidth"
                   type="button"
                   id="submit"
                 >
@@ -43,10 +43,12 @@
                 </button>
               </div>
             </div>
+            <div class="" id="lastSearches"></div>
           </div>
           <div class="column is-9" id="weatherDiv">
-            <div class="" id="currentWeatherDiv">
+            <div class="tile is-vertical" id="currentWeatherDiv">
               <h3 class="title" id="currentCity"></h3>
+              <img id="currentIconEl" class="forecast-icons" src="" />
               <p>Temperature: <span id="currentTemp"></span> °F</p>
               <p>Humidity: <span id="currentHumidity"></span>%</p>
               <p>Wind Speed: <span id="currentWind"></span> MPH</p>

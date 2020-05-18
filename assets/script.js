@@ -33,7 +33,7 @@ $("#submit").on("click", function (e) {
     // var currentTemp = Math.round((currentKelvin - 273.15) * 1.8 + 32);
     var currentHumidity = response.main.humidity;
     var currentWind = response.wind.speed;
-    var currentID = response.weather[0].id;
+    var currentIcon = response.weather[0].icon;
     var currentCity = response.name;
     console.log(
       "temp",
@@ -43,7 +43,7 @@ $("#submit").on("click", function (e) {
       "wind",
       currentWind,
       "iconID",
-      currentID
+      currentIcon
     );
     // create a new div element to hold the current day weather
     // create header element to hold the city name
@@ -53,10 +53,15 @@ $("#submit").on("click", function (e) {
     $("#currentHumidity").text(currentHumidity);
     $("#currentWind").text(currentWind);
     // get access to the weather icon with the icon id
+    $("#currentIconEl").attr(
+      "src",
+      `http://openweathermap.org/img/wn/${currentIcon}.png`
+    );
     // append the icon id to the div
   });
   // call the 5 day forcast API
   $.get(fiveDaySrc).then(function (response) {
+    $("#fiveDayDiv").empty();
     // grab the info for the forecast
     var forecastList = response.list;
     // grab the info for the next 5 days
@@ -70,15 +75,15 @@ $("#submit").on("click", function (e) {
     ];
     console.log(forecastList);
     for (var i = 0; i < fiveDay.length; i++) {
-      // run a foreach to loop over the response array
-      // console.log(fiveDay[i]);
       // for each day create a tile with forcast
       var tileEl = $("<div>", {
         class: "tile is-vertical column",
       });
       // date
       var date = fiveDay[i].dt_txt;
-      var dateEl = $("<p>").text(date);
+      var dateEl = $("<h3>", {
+        class: "title",
+      }).text(date);
       // temp
       var temp = fiveDay[i].main.temp;
       var tempEl = $("<p>").text(`Temperature: ${temp}°F`);
@@ -86,33 +91,16 @@ $("#submit").on("click", function (e) {
       var humidity = fiveDay[i].main.humidity;
       var humidityEl = $("<p>").text(`Humidity: ${humidity}%`);
       // weather icon
+      var weatherIconId = fiveDay[i].weather[0].icon;
+      var iconEl = $("<img>", {
+        src: `http://openweathermap.org/img/wn/${weatherIconId}.png`,
+        class: "forecast-icons",
+      });
       // append the data elements to the new div
-      tileEl.append(dateEl, tempEl, humidityEl);
+      tileEl.append(dateEl, iconEl, tempEl, humidityEl);
       // append the til to the 5 day div
       $("#fiveDayDiv").append(tileEl);
       console.log(date, temp, humidity);
     }
   });
 });
-
-// function forecastLoop(fiveDay) {
-//   fiveDay.forEach(function (day) {
-//     // run a foreach to loop over the response array
-//     // for each day create a tile with forcast
-//     var tileEl = $("<div", {
-//       class: "tile",
-//     });
-//     // date
-//     var dateEl = $("<p>").text(day.dt_txt);
-//     // temp
-//     var tempEl = $("<p>").text(`Temperature: ${day.main.temp}°F`);
-//     // humidity
-//     var humidityEl = $("<p>").text(`Humidity: ${day.main.humidity}%`);
-//     // weather icon
-//     // append the data elements to the new div
-//     tileEl.append(dateEl, tempEl, humidityEl);
-//     // append the til to the 5 day div
-//     $("#fiveDayDiv").append(tileEl);
-//     console.log(dateEl, tempEl, humidityEl);
-//   });
-// }
