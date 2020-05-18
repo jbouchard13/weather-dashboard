@@ -1,3 +1,5 @@
+// create index for localstorage
+var indexNumber = 0;
 // weather api key
 var apiKey = "138ccdcbc1c05e83db93a0593cb96881";
 // linking weatherDiv div
@@ -27,11 +29,8 @@ searchesArray.forEach(function (search) {
     id: search,
   }).text(search);
   lastSearchesEl.append(searchBtn);
-});
-// for each button
-for (var i = 0; i < searchesArray.length; i++) {
   // search the document for
-  $(document).on("click", `#${searchesArray[i]}`, function () {
+  $(document).on("click", `#${search}`, function () {
     var clickedCity = $(this).data("city");
     // add loading animation
     $(".control").addClass("is-loading");
@@ -57,16 +56,14 @@ for (var i = 0; i < searchesArray.length; i++) {
     });
     fiveDay(clickedFiveDaySrc);
   });
-}
-
-// create index for localstorage
-var indexNumber = 0;
+});
 
 // add an event listener to the submit button
 $("#submit").on("click", function (e) {
   e.preventDefault();
   // add 1 to the index
   indexNumber++;
+  console.log(indexNumber);
   // grab the input from both the city and state input boxes
   var cityInput = $("#cityInput").val().trim();
 
