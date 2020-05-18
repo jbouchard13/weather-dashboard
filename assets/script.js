@@ -28,6 +28,36 @@ searchesArray.forEach(function (search) {
   }).text(search);
   lastSearchesEl.append(searchBtn);
 });
+// for each button
+for (var i = 0; i < searchesArray.length; i++) {
+  // search the document for
+  $(document).on("click", `#${searchesArray[i]}`, function () {
+    var clickedCity = $(this).data("city");
+    // add loading animation
+    $(".control").addClass("is-loading");
+    // grab city data
+    var clickedCity = $(this).data("city");
+    // new search sources with clicked city
+    var clickedCurrentSrc = `https://api.openweathermap.org/data/2.5/weather?q=${clickedCity}&units=imperial&appid=${apiKey}`;
+    var clickedFiveDaySrc = `https://api.openweathermap.org/data/2.5/forecast?q=${clickedCity}&units=imperial&appid=${apiKey}`;
+    // run a new ajax call for up to date info on previous searched cities
+    $.get(clickedCurrentSrc).then(function (response) {
+      // remove search animation
+      $(".control").removeClass("is-loading");
+      var clickedCurrentConditions = {
+        currentTemp: response.main.temp,
+        currentHumidity: response.main.humidity,
+        currentWind: response.wind.speed,
+        currentIcon: response.weather[0].icon,
+        currentCity: response.name,
+      };
+      console.log(clickedCurrentConditions);
+      // update current day info
+      updateCurrentDay(clickedCurrentConditions);
+    });
+    fiveDay(clickedFiveDaySrc);
+  });
+}
 
 // create index for localstorage
 var indexNumber = 0;
@@ -117,18 +147,18 @@ $("#clearSearch").on("click", function () {
   indexNumber = 0;
 });
 
-function currentDay(src) {
-  $.get(src).then(function (response) {
+function currentDay(currentSrc) {
+  $.get(currentSrc).then(function (response) {
     // remove search animation
     $(".control").removeClass("is-loading");
-    var clickedCurrentConditions = {
+    var currentConditions = {
       currentTemp: response.main.temp,
       currentHumidity: response.main.humidity,
       currentWind: response.wind.speed,
       currentIcon: response.weather[0].icon,
       currentCity: response.name,
     };
-    updateCurrentDay(clickedCurrentConditions);
+    updateCurrentDay(currentConditions);
   });
 }
 
@@ -189,4 +219,28 @@ function updateCurrentDay(currentConditions) {
     "src",
     `http://openweathermap.org/img/wn/${currentConditions.currentIcon}.png`
   );
+}
+
+function grabClickedCity(clickedCity) {
+  // add loading animation
+  $(".control").addClass("is-loading");
+  // grab city data
+  var clickedCity = $(this).data("city");
+  // new search sources with clicked city
+  var clickedCurrentSrc = `https://api.openweathermap.org/data/2.5/weather?q=${clickedCity}&units=imperial&appid=${apiKey}`;
+  var clickedFiveDaySrc = `https://api.openweathermap.org/data/2.5/forecast?q=${clickedCity}&units=imperial&appid=${apiKey}`;
+  // run a new ajax call for up to date info on previous searched cities
+  $.get(clickedCurrentSrc).then(function (response) {
+    // remove search animation
+    $(".control").removeClass("is-loading");
+    var clickedCurrentConditions = {
+      currentTemp: response.main.temp,
+      currentHumidity: response.main.humidity,
+      currentWind: response.wind.speed,
+      currentIcon: response.weather[0].icon,
+      currentCity: response.name,
+    };
+    updateCurrentDay(clickedCurrentConditions);
+  });
+  fiveDay(clickedFiveDaySrc);
 }
